@@ -1,0 +1,10 @@
+{
+    "name": "azure-blob-cli",
+    "version": "1.0.0",
+    "description": "CLI pour stocker, lister et supprimer des fichiers sur Azure Blob Storage",
+    "main": "index.js",
+    "dependencies": {
+        "@azure/storage-blob": "^12.26.0",
+        "@azure/identity": "^4.6.0"
+    }
+}
