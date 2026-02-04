@@ -1,0 +1,13 @@
+{
+    "name": "azure-sql-test",
+    "version": "1.0.0",
+    "description": "Test Azure SQL connection with Entra ID - SalesLT.Product HTML render",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "@azure/identity": "^4.6.0",
+        "mssql": "^11.0.0"
+    }
+}
