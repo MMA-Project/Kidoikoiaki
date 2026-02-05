@@ -1,4 +1,4 @@
-.PHONY: install install-backend install-frontend dev dev-backend dev-frontend build clean seed help bicep-deploy bicep-validate docker-build docker-push
+.PHONY: install install-backend install-frontend dev dev-backend dev-frontend build clean seed help bicep-deploy bicep-validate docker-build docker-push docker-build-frontend bicep-setup-rbac bicep-logs bicep-destroy dev-windows
 
 # Default target
 help:
@@ -73,8 +73,6 @@ build-frontend:
 	cd front && npm run build
 
 # Docker commands
-.PHONY: build-backend build-frontend
-
 ACR_NAME ?= kdkacr
 ENV ?= dev
 BACKEND_IMAGE = $(ACR_NAME).azurecr.io/kidoikoiaki-backend:latest
@@ -98,8 +96,6 @@ docker-push: docker-build docker-build-frontend
 	@echo "✅ Images pushed"
 
 # Bicep commands
-.PHONY: bicep-validate bicep-deploy bicep-setup-rbac bicep-logs bicep-destroy
-
 RESOURCE_GROUP = kdk-$(ENV)-rg
 
 bicep-validate:
@@ -139,92 +135,6 @@ bicep-destroy:
 	else \
 		echo "Cancelled"; \
 	fi
-	@echo "✅ Build complete"
-
-build-backend:
-	@echo "🔨 Building backend..."
-	cd backend && npm run build
-
-build-frontend:
-	@echo "🔨 Building frontend..."
-	cd front && npm run build
-
-# Docker commands
-.PHONY: build-backend build-frontend
-
-ACR_NAME ?= kdkacr
-ENV ?= dev
-BACKEND_IMAGE = $(ACR_NAME).azurecr.io/kidoikoiaki-backend:latest
-FRONTEND_IMAGE = $(ACR_NAME).azurecr.io/kidoikoiaki-frontend:latest
-
-docker-build:
-	@echo "🐳 Building backend Docker image for $(ENV)..."
-	docker build -f Dockerfile -t $(BACKEND_IMAGE) .
-	@echo "✅ Image built: $(BACKEND_IMAGE)"
-
-docker-build-frontend:
-	@echo "🐳 Building frontend Docker image for $(ENV)..."
-	docker build -f Dockerfile.frontend -t $(FRONTEND_IMAGE) .
-	@echo "✅ Image built: $(FRONTEND_IMAGE)"
-
-docker-push: docker-build docker-build-frontend
-	@echo "📤 Pushing images to ACR ($(ACR_NAME))..."
-	az acr login --name $(ACR_NAME)
-	docker push $(BACKEND_IMAGE)
-	docker push $(FRONTEND_IMAGE)
-	@echo "✅ Images pushed"
-
-# Bicep commands
-.PHONY: bicep-validate bicep-deploy bicep-setup-rbac bicep-logs bicep-destroy
-
-RESOURCE_GROUP = kdk-$(ENV)-rg
-
-bicep-validate:
-	@echo "✅ Validating Bicep templates for $(ENV)..."
-	az bicep build-params --file bicep/parameters.$(ENV).biceparam
-	az deployment group validate \
-		--resource-group $(RESOURCE_GROUP) \
-		--template-file bicep/main.bicep \
-		--parameters @bicep/parameters.$(ENV).biceparam
-	@echo "✅ Templates are valid"
-
-bicep-deploy: bicep-validate docker-push
-	@echo "🚀 Deploying to $(ENV) environment..."
-	az deployment group create \
-		--resource-group $(RESOURCE_GROUP) \
-		--template-file bicep/main.bicep \
-		--parameters @bicep/parameters.$(ENV).biceparam \
-		--parameters backendImageUri=$(BACKEND_IMAGE)
-	@echo "✅ Deployment complete!"
-	@make bicep-logs
-
-bicep-setup-rbac:
-	@echo "🔐 Setting up RBAC for $(ENV)..."
-	chmod +x bicep/setup-rbac.sh
-	./bicep/setup-rbac.sh $(ENV)
-
-bicep-logs:
-	@echo "📋 Fetching logs from backend (kdk-$(ENV)-backend)..."
-	az webapp log tail --name kdk-$(ENV)-backend --resource-group $(RESOURCE_GROUP) || echo "App Service not yet available"
-
-bicep-destroy:
-	@echo "🗑️  WARNING: This will delete all resources in $(RESOURCE_GROUP)"
-	@read -p "Are you sure? Type 'yes' to confirm: " confirm; \
-	if [ "$$confirm" = "yes" ]; then \
-		az group delete --name $(RESOURCE_GROUP) --yes; \
-		echo "✅ Resource group deleted"; \
-	else \
-		echo "Cancelled"; \
-	fi
-	@echo "✅ Build complete"
-
-build-backend:
-	@echo "🔨 Building backend..."
-	cd backend && npm run build
-
-build-frontend:
-	@echo "🔨 Building frontend..."
-	cd front && npm run build
 
 # Seed database
 seed:

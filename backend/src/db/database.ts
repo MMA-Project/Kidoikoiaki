@@ -1,5 +1,5 @@
-import sql, { ConnectionPool, config as SqlConfig } from 'mssql';
-import { AzureCliCredential } from '@azure/identity';
+import sql, { ConnectionPool, config as SqlConfig } from "mssql";
+import { AzureCliCredential } from "@azure/identity";
 
 let pool: ConnectionPool | null = null;
 
@@ -8,34 +8,55 @@ export async function getConnection(): Promise<ConnectionPool> {
     return pool;
   }
 
-  const credential = new AzureCliCredential({
-    tenantId: undefined,
-  });
-  
-  const tokenResponse = await credential.getToken('https://database.windows.net/.default');
+  // Validate required environment variables
+  if (!process.env.AZURE_SQL_SERVER) {
+    throw new Error(
+      "❌ Missing environment variable: AZURE_SQL_SERVER. Please set it before running seed.",
+    );
+  }
+  if (!process.env.AZURE_SQL_DATABASE) {
+    throw new Error(
+      "❌ Missing environment variable: AZURE_SQL_DATABASE. Please set it before running seed.",
+    );
+  }
 
-  const config: SqlConfig = {
-    server: process.env.AZURE_SQL_SERVER!,
-    database: process.env.AZURE_SQL_DATABASE!,
-    authentication: {
-      type: 'azure-active-directory-access-token',
-      options: { 
-        token: tokenResponse.token 
+  try {
+    const credential = new AzureCliCredential({
+      tenantId: undefined,
+    });
+
+    const tokenResponse = await credential.getToken(
+      "https://database.windows.net/.default",
+    );
+
+    const config: SqlConfig = {
+      server: process.env.AZURE_SQL_SERVER,
+      database: process.env.AZURE_SQL_DATABASE,
+      authentication: {
+        type: "azure-active-directory-access-token",
+        options: {
+          token: tokenResponse.token,
+        },
       },
-    },
-    options: {
-      encrypt: true,
-      trustServerCertificate: false,
-    },
-  };
+      options: {
+        encrypt: true,
+        trustServerCertificate: false,
+      },
+    };
 
-  pool = await sql.connect(config);
-  return pool;
+    pool = await sql.connect(config);
+    return pool;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`❌ Failed to connect to database: ${error.message}`);
+    }
+    throw error;
+  }
 }
 
 export async function initializeDatabase(): Promise<void> {
   const connection = await getConnection();
-  
+
   // Create Lists table
   await connection.request().query(`
     IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Lists' AND xtype='U')
@@ -95,7 +116,7 @@ export async function initializeDatabase(): Promise<void> {
     )
   `);
 
-  console.log('📊 Database tables created/verified');
+  console.log("📊 Database tables created/verified");
 }
 
 export async function closeConnection(): Promise<void> {
