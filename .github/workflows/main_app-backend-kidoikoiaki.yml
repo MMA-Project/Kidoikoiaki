@@ -31,9 +31,16 @@ jobs:
         run: npm run build
         working-directory: backend
 
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FE0AA91E86C44FCA98128EC748509C4C }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CF27DDA5577642F2B47A67EB8518B8F0 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_59A1088D8CFC4D6D9EEA22AF321E61B2 }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "app-backend-kidoikoiaki"
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: "backend"
+          # publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: "backend/dist"
