@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useCreateExpense } from '../api/hooks';
-import { Participant } from '../types';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useCreateExpense } from "../api/hooks";
+import type { Participant } from "../types";
 
 interface ExpenseFormProps {
   listId: string;
@@ -10,18 +10,20 @@ interface ExpenseFormProps {
   onCancel: () => void;
 }
 
-export default function ExpenseForm({ 
-  listId, 
-  participants, 
-  onSuccess, 
-  onCancel 
+export default function ExpenseForm({
+  listId,
+  participants,
+  onSuccess,
+  onCancel,
 }: ExpenseFormProps) {
   const createExpenseMutation = useCreateExpense();
-  
-  const [title, setTitle] = useState('');
-  const [amount, setAmount] = useState('');
-  const [payerId, setPayerId] = useState('');
-  const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState("");
+  const [payerId, setPayerId] = useState("");
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    [],
+  );
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,13 +44,13 @@ export default function ExpenseForm({
     if (selectedParticipants.length === participants.length) {
       setSelectedParticipants([]);
     } else {
-      setSelectedParticipants(participants.map(p => p.id));
+      setSelectedParticipants(participants.map((p) => p.id));
     }
   }
 
   function toggleParticipant(id: string) {
     if (selectedParticipants.includes(id)) {
-      setSelectedParticipants(selectedParticipants.filter(p => p !== id));
+      setSelectedParticipants(selectedParticipants.filter((p) => p !== id));
     } else {
       setSelectedParticipants([...selectedParticipants, id]);
     }
@@ -59,19 +61,19 @@ export default function ExpenseForm({
     setError(null);
 
     if (!title.trim()) {
-      setError('Le titre est requis');
+      setError("Le titre est requis");
       return;
     }
     if (!amount || parseFloat(amount) <= 0) {
-      setError('Le montant doit être positif');
+      setError("Le montant doit être positif");
       return;
     }
     if (!payerId) {
-      setError('Veuillez sélectionner qui a payé');
+      setError("Veuillez sélectionner qui a payé");
       return;
     }
     if (selectedParticipants.length === 0) {
-      setError('Veuillez sélectionner au moins un participant');
+      setError("Veuillez sélectionner au moins un participant");
       return;
     }
 
@@ -86,17 +88,19 @@ export default function ExpenseForm({
       });
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de la création');
+      setError(
+        err instanceof Error ? err.message : "Erreur lors de la création",
+      );
     }
   }
 
   return (
     <motion.form
       initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: 'auto' }}
+      animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
       onSubmit={handleSubmit}
-      className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6 overflow-hidden"
+      className="bg-linear-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6 overflow-hidden"
     >
       <h3 className="text-lg font-semibold text-slate-800 mb-4">
         Nouvelle dépense
@@ -115,7 +119,10 @@ export default function ExpenseForm({
       <div className="space-y-4">
         {/* Title */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-1">
+          <label
+            htmlFor="title"
+            className="block text-sm font-medium text-slate-700 mb-1"
+          >
             Titre *
           </label>
           <input
@@ -125,13 +132,16 @@ export default function ExpenseForm({
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Ex: Restaurant, Essence, Courses..."
             disabled={createExpenseMutation.isPending}
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-slate-800 placeholder:text-slate-400"
           />
         </div>
 
         {/* Amount */}
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-slate-700 mb-1">
+          <label
+            htmlFor="amount"
+            className="block text-sm font-medium text-slate-700 mb-1"
+          >
             Montant (€) *
           </label>
           <input
@@ -143,13 +153,16 @@ export default function ExpenseForm({
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.00"
             disabled={createExpenseMutation.isPending}
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-slate-800 placeholder:text-slate-400"
           />
         </div>
 
         {/* Payer */}
         <div>
-          <label htmlFor="payer" className="block text-sm font-medium text-slate-700 mb-1">
+          <label
+            htmlFor="payer"
+            className="block text-sm font-medium text-slate-700 mb-1"
+          >
             Payé par *
           </label>
           <select
@@ -157,11 +170,13 @@ export default function ExpenseForm({
             value={payerId}
             onChange={(e) => setPayerId(e.target.value)}
             disabled={createExpenseMutation.isPending}
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-slate-800"
           >
             <option value="">-- Sélectionner --</option>
-            {participants.map(p => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+            {participants.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
             ))}
           </select>
         </div>
@@ -177,18 +192,18 @@ export default function ExpenseForm({
               onClick={handleSelectAll}
               className="text-indigo-600 text-sm font-medium hover:text-indigo-800 transition-colors mb-3"
             >
-              {selectedParticipants.length === participants.length 
-                ? 'Désélectionner tout' 
-                : 'Sélectionner tout'}
+              {selectedParticipants.length === participants.length
+                ? "Désélectionner tout"
+                : "Sélectionner tout"}
             </button>
             <div className="flex flex-wrap gap-3">
-              {participants.map(p => (
-                <label 
+              {participants.map((p) => (
+                <label
                   key={p.id}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all ${
                     selectedParticipants.includes(p.id)
-                      ? 'bg-indigo-100 text-indigo-700'
-                      : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                      ? "bg-indigo-100 text-indigo-700"
+                      : "bg-slate-50 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   <input
@@ -198,11 +213,13 @@ export default function ExpenseForm({
                     disabled={createExpenseMutation.isPending}
                     className="sr-only"
                   />
-                  <span className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
-                    selectedParticipants.includes(p.id)
-                      ? 'bg-indigo-600 border-indigo-600'
-                      : 'border-slate-300'
-                  }`}>
+                  <span
+                    className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                      selectedParticipants.includes(p.id)
+                        ? "bg-indigo-600 border-indigo-600"
+                        : "border-slate-300"
+                    }`}
+                  >
                     {selectedParticipants.includes(p.id) && (
                       <span className="text-white text-xs">✓</span>
                     )}
@@ -216,7 +233,10 @@ export default function ExpenseForm({
 
         {/* Image Upload */}
         <div>
-          <label htmlFor="image" className="block text-sm font-medium text-slate-700 mb-1">
+          <label
+            htmlFor="image"
+            className="block text-sm font-medium text-slate-700 mb-1"
+          >
             Photo du reçu (optionnel)
           </label>
           <input
@@ -229,9 +249,9 @@ export default function ExpenseForm({
           />
           {imagePreview && (
             <div className="relative mt-3 inline-block">
-              <img 
-                src={imagePreview} 
-                alt="Aperçu" 
+              <img
+                src={imagePreview}
+                alt="Aperçu"
                 className="max-w-48 max-h-32 rounded-lg object-cover"
               />
               <button
@@ -267,7 +287,7 @@ export default function ExpenseForm({
             disabled={createExpenseMutation.isPending}
             className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors"
           >
-            {createExpenseMutation.isPending ? 'Création...' : 'Ajouter'}
+            {createExpenseMutation.isPending ? "Création..." : "Ajouter"}
           </motion.button>
         </div>
       </div>

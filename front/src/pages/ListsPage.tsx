@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useLists, useCreateList, useDeleteList } from '../api/hooks';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLists, useCreateList, useDeleteList } from "../api/hooks";
 
 interface ListsPageProps {
   onSelectList: (listId: string) => void;
@@ -10,10 +10,10 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
   const { data: lists = [], isLoading, error } = useLists();
   const createListMutation = useCreateList();
   const deleteListMutation = useDeleteList();
-  
+
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newListName, setNewListName] = useState('');
-  const [newListDescription, setNewListDescription] = useState('');
+  const [newListName, setNewListName] = useState("");
+  const [newListDescription, setNewListDescription] = useState("");
 
   async function handleCreateList(e: React.FormEvent) {
     e.preventDefault();
@@ -24,22 +24,22 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
         name: newListName.trim(),
         description: newListDescription.trim() || undefined,
       });
-      setNewListName('');
-      setNewListDescription('');
+      setNewListName("");
+      setNewListDescription("");
       setShowCreateForm(false);
     } catch (err) {
-      console.error('Failed to create list:', err);
+      console.error("Failed to create list:", err);
     }
   }
 
   async function handleDeleteList(id: string, e: React.MouseEvent) {
     e.stopPropagation();
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette liste ?')) return;
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette liste ?")) return;
 
     try {
       await deleteListMutation.mutateAsync(id);
     } catch (err) {
-      console.error('Failed to delete list:', err);
+      console.error("Failed to delete list:", err);
     }
   }
 
@@ -48,7 +48,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
       <div className="flex items-center justify-center min-h-screen">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full"
         />
       </div>
@@ -58,7 +58,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8"
@@ -72,7 +72,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
           onClick={() => setShowCreateForm(!showCreateForm)}
           className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors"
         >
-          {showCreateForm ? 'Annuler' : '+ Nouvelle Liste'}
+          {showCreateForm ? "Annuler" : "+ Nouvelle Liste"}
         </motion.button>
       </motion.header>
 
@@ -81,11 +81,11 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
         {error && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6"
           >
-            {error instanceof Error ? error.message : 'Une erreur est survenue'}
+            {error instanceof Error ? error.message : "Une erreur est survenue"}
           </motion.div>
         )}
       </AnimatePresence>
@@ -95,7 +95,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
         {showCreateForm && (
           <motion.form
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleCreateList}
             className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200 mb-8 overflow-hidden"
@@ -105,7 +105,10 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
             </h3>
             <div className="space-y-4">
               <div>
-                <label htmlFor="listName" className="block text-sm font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="listName"
+                  className="block text-sm font-medium text-slate-700 mb-1"
+                >
                   Nom de la liste *
                 </label>
                 <input
@@ -116,11 +119,14 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
                   placeholder="Ex: Vacances été 2026"
                   required
                   disabled={createListMutation.isPending}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-slate-800 bg-white placeholder:text-slate-400"
                 />
               </div>
               <div>
-                <label htmlFor="listDescription" className="block text-sm font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="listDescription"
+                  className="block text-sm font-medium text-slate-700 mb-1"
+                >
                   Description
                 </label>
                 <textarea
@@ -129,7 +135,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
                   onChange={(e) => setNewListDescription(e.target.value)}
                   placeholder="Description optionnelle..."
                   disabled={createListMutation.isPending}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none h-24"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none h-24 text-slate-800 bg-white placeholder:text-slate-400"
                 />
               </div>
               <motion.button
@@ -139,7 +145,9 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
                 disabled={createListMutation.isPending}
                 className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium shadow-lg shadow-indigo-200 hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors"
               >
-                {createListMutation.isPending ? 'Création...' : 'Créer la liste'}
+                {createListMutation.isPending
+                  ? "Création..."
+                  : "Créer la liste"}
               </motion.button>
             </div>
           </motion.form>
@@ -153,7 +161,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center py-16 bg-white rounded-2xl shadow-xl shadow-slate-200"
         >
-          <motion.span 
+          <motion.span
             className="text-6xl block mb-4"
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -169,7 +177,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
         </motion.div>
       ) : (
         /* Lists Grid */
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           initial="hidden"
           animate="visible"
@@ -188,7 +196,10 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              whileHover={{ y: -4, boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.15)' }}
+              whileHover={{
+                y: -4,
+                boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.15)",
+              }}
               onClick={() => onSelectList(list.id)}
               className="bg-white rounded-2xl p-6 shadow-lg shadow-slate-200 cursor-pointer transition-all"
             >
@@ -212,7 +223,7 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
                 </p>
               )}
               <div className="text-xs text-slate-400">
-                Créée le {new Date(list.createdAt).toLocaleDateString('fr-FR')}
+                Créée le {new Date(list.createdAt).toLocaleDateString("fr-FR")}
               </div>
             </motion.div>
           ))}

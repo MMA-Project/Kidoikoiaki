@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listsApi, participantsApi, expensesApi, balancesApi, queryKeys } from './client';
-import { CreateListDto, CreateParticipantDto, CreateExpenseDto } from '../types';
+import type { CreateListDto, CreateParticipantDto, CreateExpenseDto } from '../types';
 
 // Lists Hooks
 export function useLists() {

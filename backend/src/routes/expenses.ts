@@ -180,11 +180,16 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
     // Upload image if provided
     let imageUrl: string | null = null;
     if (req.file) {
-      imageUrl = await uploadImage(
-        req.file.buffer,
-        req.file.originalname,
-        req.file.mimetype
-      );
+      try {
+        imageUrl = await uploadImage(
+          req.file.buffer,
+          req.file.originalname,
+          req.file.mimetype
+        );
+      } catch (uploadError) {
+        console.error('Error uploading image to blob storage:', uploadError);
+        // Continue without image if upload fails
+      }
     }
 
     const id = uuidv4();
@@ -240,7 +245,8 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
     });
   } catch (error) {
     console.error('Error creating expense:', error);
-    res.status(500).json({ error: 'Failed to create expense' });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ error: 'Failed to create expense', details: message });
   }
 });
 

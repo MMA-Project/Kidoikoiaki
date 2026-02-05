@@ -1,4 +1,4 @@
-import { 
+import type { 
   List, 
   ListDetail, 
   Participant, 
@@ -10,6 +10,15 @@ import {
 } from '../types';
 
 const API_BASE = 'http://localhost:3001/api';
+
+// Helper to get image URL from blob name
+export function getImageUrl(blobName: string | undefined): string | undefined {
+  if (!blobName) return undefined;
+  // If it's already a full URL (legacy), return as-is
+  if (blobName.startsWith('http')) return blobName;
+  // Otherwise, build the proxy URL
+  return `${API_BASE}/images/${blobName}`;
+}
 
 // Helper function for API calls
 async function fetchApi<T>(

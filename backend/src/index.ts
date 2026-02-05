@@ -8,6 +8,7 @@ import listsRouter from './routes/lists';
 import participantsRouter from './routes/participants';
 import expensesRouter from './routes/expenses';
 import balancesRouter from './routes/balances';
+import imagesRouter from './routes/images';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,6 +23,7 @@ app.use('/api/lists', listsRouter);
 app.use('/api/participants', participantsRouter);
 app.use('/api/expenses', expensesRouter);
 app.use('/api/balances', balancesRouter);
+app.use('/api/images', imagesRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
