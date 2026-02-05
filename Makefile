@@ -1,4 +1,4 @@
-.PHONY: install install-backend install-frontend dev dev-backend dev-frontend build clean help
+.PHONY: install install-backend install-frontend dev dev-backend dev-frontend build clean seed help
 
 # Default target
 help:
@@ -12,6 +12,7 @@ help:
 	@echo "  make dev-backend      Run backend only in development mode"
 	@echo "  make dev-frontend     Run frontend only in development mode"
 	@echo "  make build            Build both backend and frontend for production"
+	@echo "  make seed             Reset and seed the database with sample data"
 	@echo "  make clean            Remove node_modules and build artifacts"
 	@echo ""
 	@echo "Prerequisites:"
@@ -57,6 +58,11 @@ build-backend:
 build-frontend:
 	@echo "🔨 Building frontend..."
 	cd front && npm run build
+
+# Seed database
+seed:
+	@echo "🌱 Seeding database..."
+	cd backend && npm run seed
 
 # Clean
 clean:
