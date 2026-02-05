@@ -1,0 +1,26 @@
+# Bicep-specific files to ignore
+
+# Local artifacts
+bin/
+obj/
+bicepArtifacts/
+
+# Lock files
+*.lock
+bicep.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.env.local
+*.log
+
+# Azure credentials (never commit!)
+.azure/
+*.azureauth
