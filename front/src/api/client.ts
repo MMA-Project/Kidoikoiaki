@@ -1,42 +1,46 @@
-import type { 
-  List, 
-  ListDetail, 
-  Participant, 
-  Expense, 
+import type {
+  List,
+  ListDetail,
+  Participant,
+  Expense,
   BalanceSummary,
   CreateListDto,
   UpdateListDto,
   CreateParticipantDto,
   CreateExpenseDto,
-  UpdateExpenseDto
-} from '../types';
+  UpdateExpenseDto,
+} from "../types";
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = `${import.meta.env.VITE_API_URL || "http://localhost:3001"}/api`;
 
 // Helper to get image URL from blob name
 export function getImageUrl(blobName: string | undefined): string | undefined {
   if (!blobName) return undefined;
   // If it's already a full URL (legacy), return as-is
-  if (blobName.startsWith('http')) return blobName;
+  if (blobName.startsWith("http")) return blobName;
   // Otherwise, build the proxy URL
   return `${API_BASE}/images/${blobName}`;
 }
 
 // Helper function for API calls
 async function fetchApi<T>(
-  endpoint: string, 
-  options?: RequestInit
+  endpoint: string,
+  options?: RequestInit,
 ): Promise<T> {
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers: {
-      ...(options?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+      ...(options?.body instanceof FormData
+        ? {}
+        : { "Content-Type": "application/json" }),
       ...options?.headers,
     },
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'An error occurred' }));
+    const error = await response
+      .json()
+      .catch(() => ({ error: "An error occurred" }));
     throw new Error(error.error || `HTTP error! status: ${response.status}`);
   }
 
@@ -49,48 +53,49 @@ async function fetchApi<T>(
 
 // Lists API
 export const listsApi = {
-  getAll: (): Promise<List[]> => fetchApi<List[]>('/lists'),
-  
-  getById: (id: string): Promise<ListDetail> => fetchApi<ListDetail>(`/lists/${id}`),
-  
-  create: (data: CreateListDto): Promise<List> => 
-    fetchApi<List>('/lists', {
-      method: 'POST',
+  getAll: (): Promise<List[]> => fetchApi<List[]>("/lists"),
+
+  getById: (id: string): Promise<ListDetail> =>
+    fetchApi<ListDetail>(`/lists/${id}`),
+
+  create: (data: CreateListDto): Promise<List> =>
+    fetchApi<List>("/lists", {
+      method: "POST",
       body: JSON.stringify(data),
     }),
-  
+
   update: (id: string, data: UpdateListDto): Promise<List> =>
     fetchApi<List>(`/lists/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     }),
-  
+
   delete: (id: string): Promise<void> =>
     fetchApi<void>(`/lists/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     }),
 };
 
 // Participants API
 export const participantsApi = {
-  getByListId: (listId: string): Promise<Participant[]> => 
+  getByListId: (listId: string): Promise<Participant[]> =>
     fetchApi<Participant[]>(`/participants?listId=${listId}`),
-  
+
   create: (data: CreateParticipantDto): Promise<Participant> =>
-    fetchApi<Participant>('/participants', {
-      method: 'POST',
+    fetchApi<Participant>("/participants", {
+      method: "POST",
       body: JSON.stringify(data),
     }),
-  
+
   update: (id: string, name: string): Promise<Participant> =>
     fetchApi<Participant>(`/participants/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify({ name }),
     }),
-  
+
   delete: (id: string): Promise<void> =>
     fetchApi<void>(`/participants/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     }),
 };
 
@@ -98,38 +103,38 @@ export const participantsApi = {
 export const expensesApi = {
   getByListId: (listId: string): Promise<Expense[]> =>
     fetchApi<Expense[]>(`/expenses?listId=${listId}`),
-  
+
   getById: (id: string): Promise<Expense> =>
     fetchApi<Expense>(`/expenses/${id}`),
-  
+
   create: (data: CreateExpenseDto): Promise<Expense> => {
     const formData = new FormData();
-    formData.append('listId', data.listId);
-    formData.append('title', data.title);
-    formData.append('amount', data.amount.toString());
-    formData.append('category', data.category);
-    formData.append('payerId', data.payerId);
-    formData.append('participantIds', JSON.stringify(data.participantIds));
-    
+    formData.append("listId", data.listId);
+    formData.append("title", data.title);
+    formData.append("amount", data.amount.toString());
+    formData.append("category", data.category);
+    formData.append("payerId", data.payerId);
+    formData.append("participantIds", JSON.stringify(data.participantIds));
+
     if (data.image) {
-      formData.append('image', data.image);
+      formData.append("image", data.image);
     }
 
-    return fetchApi<Expense>('/expenses', {
-      method: 'POST',
+    return fetchApi<Expense>("/expenses", {
+      method: "POST",
       body: formData,
     });
   },
 
   update: (id: string, data: UpdateExpenseDto): Promise<Expense> =>
     fetchApi<Expense>(`/expenses/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     }),
-  
+
   delete: (id: string): Promise<void> =>
     fetchApi<void>(`/expenses/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     }),
 };
 
@@ -141,9 +146,9 @@ export const balancesApi = {
 
 // Query Keys
 export const queryKeys = {
-  lists: ['lists'] as const,
-  list: (id: string) => ['lists', id] as const,
-  participants: (listId: string) => ['participants', listId] as const,
-  expenses: (listId: string) => ['expenses', listId] as const,
-  balances: (listId: string) => ['balances', listId] as const,
+  lists: ["lists"] as const,
+  list: (id: string) => ["lists", id] as const,
+  participants: (listId: string) => ["participants", listId] as const,
+  expenses: (listId: string) => ["expenses", listId] as const,
+  balances: (listId: string) => ["balances", listId] as const,
 };
