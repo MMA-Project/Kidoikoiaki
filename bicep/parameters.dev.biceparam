@@ -1,0 +1,10 @@
+using './main.bicep'
+
+param environment = 'dev'
+param resourcePrefix = 'kdk'
+param location = 'westeurope'
+param appServiceSku = 'Basic'
+param sqlDatabaseEdition = 'Basic'
+param storageRedundancy = 'LRS'
+param backendImageUri = 'kdkacr.azurecr.io/kidoikoiaki-backend:latest'
+param frontendBuildUri = ''

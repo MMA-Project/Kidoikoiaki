@@ -1,0 +1,30 @@
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY front/package*.json ./
+COPY front/tsconfig*.json ./
+COPY front/eslint.config.js ./
+COPY front/vite.config.ts ./
+COPY front/index.html ./
+COPY front/src ./src
+COPY front/public ./public
+
+RUN npm ci && npm run build
+
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install simple HTTP server
+RUN npm install -g serve
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+
+USER node
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
