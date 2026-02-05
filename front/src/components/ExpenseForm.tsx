@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useCreateExpense } from "../api/hooks";
-import type { Participant } from "../types";
+import {
+  EXPENSE_CATEGORIES,
+  type Participant,
+  type ExpenseCategory,
+} from "../types";
 
 interface ExpenseFormProps {
   listId: string;
@@ -20,6 +24,7 @@ export default function ExpenseForm({
 
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState<ExpenseCategory>("other");
   const [payerId, setPayerId] = useState("");
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
     [],
@@ -82,6 +87,7 @@ export default function ExpenseForm({
         listId,
         title: title.trim(),
         amount: parseFloat(amount),
+        category,
         payerId,
         participantIds: selectedParticipants,
         image: image || undefined,
@@ -134,6 +140,31 @@ export default function ExpenseForm({
             disabled={createExpenseMutation.isPending}
             className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-slate-800 placeholder:text-slate-400"
           />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label
+            htmlFor="category"
+            className="block text-sm font-medium text-slate-700 mb-1"
+          >
+            Catégorie
+          </label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
+            disabled={createExpenseMutation.isPending}
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-slate-800"
+          >
+            {Object.entries(EXPENSE_CATEGORIES).map(
+              ([key, { label, icon }]) => (
+                <option key={key} value={key}>
+                  {icon} {label}
+                </option>
+              ),
+            )}
+          </select>
         </div>
 
         {/* Amount */}

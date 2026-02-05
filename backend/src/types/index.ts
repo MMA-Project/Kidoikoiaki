@@ -1,5 +1,7 @@
 // Types for the Kidoikoiaki application
 
+export type ExpenseCategory = 'food' | 'transport' | 'accommodation' | 'entertainment' | 'shopping' | 'health' | 'utilities' | 'other';
+
 export interface List {
   id: string;
   name: string;
@@ -20,6 +22,7 @@ export interface Expense {
   listId: string;
   title: string;
   amount: number;
+  category: ExpenseCategory;
   payerId: string;
   imageUrl?: string;
   createdAt: Date;
@@ -36,6 +39,11 @@ export interface CreateListDto {
   description?: string;
 }
 
+export interface UpdateListDto {
+  name: string;
+  description?: string;
+}
+
 export interface CreateParticipantDto {
   listId: string;
   name: string;
@@ -45,9 +53,18 @@ export interface CreateExpenseDto {
   listId: string;
   title: string;
   amount: number;
+  category: ExpenseCategory;
   payerId: string;
   participantIds: string[];
   imageUrl?: string;
+}
+
+export interface UpdateExpenseDto {
+  title: string;
+  amount: number;
+  category: ExpenseCategory;
+  payerId: string;
+  participantIds: string[];
 }
 
 export interface Balance {

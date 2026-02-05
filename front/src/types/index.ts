@@ -1,5 +1,19 @@
 // API Types for Kidoikoiaki
 
+// Expense Categories with icons
+export const EXPENSE_CATEGORIES = {
+  food: { label: 'Nourriture', icon: '🍽️' },
+  transport: { label: 'Transport', icon: '🚗' },
+  accommodation: { label: 'Hébergement', icon: '🏨' },
+  entertainment: { label: 'Loisirs', icon: '🎉' },
+  shopping: { label: 'Shopping', icon: '🛒' },
+  health: { label: 'Santé', icon: '💊' },
+  utilities: { label: 'Services', icon: '💡' },
+  other: { label: 'Autre', icon: '📦' },
+} as const;
+
+export type ExpenseCategory = keyof typeof EXPENSE_CATEGORIES;
+
 export interface List {
   id: string;
   name: string;
@@ -20,6 +34,7 @@ export interface Expense {
   listId: string;
   title: string;
   amount: number;
+  category: ExpenseCategory;
   payerId: string;
   payerName?: string;
   imageUrl?: string;
@@ -63,6 +78,11 @@ export interface CreateListDto {
   description?: string;
 }
 
+export interface UpdateListDto {
+  name: string;
+  description?: string;
+}
+
 export interface CreateParticipantDto {
   listId: string;
   name: string;
@@ -72,7 +92,16 @@ export interface CreateExpenseDto {
   listId: string;
   title: string;
   amount: number;
+  category: ExpenseCategory;
   payerId: string;
   participantIds: string[];
   image?: File;
+}
+
+export interface UpdateExpenseDto {
+  title: string;
+  amount: number;
+  category: ExpenseCategory;
+  payerId: string;
+  participantIds: string[];
 }

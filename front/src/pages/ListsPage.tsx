@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLists, useCreateList, useDeleteList } from "../api/hooks";
+import {
+  useLists,
+  useCreateList,
+  useDeleteList,
+  useUpdateList,
+} from "../api/hooks";
 
 interface ListsPageProps {
   onSelectList: (listId: string) => void;
@@ -10,10 +15,14 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
   const { data: lists = [], isLoading, error } = useLists();
   const createListMutation = useCreateList();
   const deleteListMutation = useDeleteList();
+  const updateListMutation = useUpdateList();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newListName, setNewListName] = useState("");
   const [newListDescription, setNewListDescription] = useState("");
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [editListName, setEditListName] = useState("");
+  const [editListDescription, setEditListDescription] = useState("");
 
   async function handleCreateList(e: React.FormEvent) {
     e.preventDefault();
@@ -40,6 +49,40 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
       await deleteListMutation.mutateAsync(id);
     } catch (err) {
       console.error("Failed to delete list:", err);
+    }
+  }
+
+  function startEditList(
+    list: { id: string; name: string; description?: string },
+    e: React.MouseEvent,
+  ) {
+    e.stopPropagation();
+    setEditingListId(list.id);
+    setEditListName(list.name);
+    setEditListDescription(list.description || "");
+  }
+
+  function cancelEditList(e: React.MouseEvent) {
+    e.stopPropagation();
+    setEditingListId(null);
+  }
+
+  async function handleUpdateList(e: React.FormEvent, id: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!editListName.trim()) return;
+
+    try {
+      await updateListMutation.mutateAsync({
+        id,
+        data: {
+          name: editListName.trim(),
+          description: editListDescription.trim() || undefined,
+        },
+      });
+      setEditingListId(null);
+    } catch (err) {
+      console.error("Failed to update list:", err);
     }
   }
 
@@ -200,31 +243,83 @@ export default function ListsPage({ onSelectList }: ListsPageProps) {
                 y: -4,
                 boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.15)",
               }}
-              onClick={() => onSelectList(list.id)}
+              onClick={() => {
+                if (editingListId === list.id) return;
+                onSelectList(list.id);
+              }}
               className="bg-white rounded-2xl p-6 shadow-lg shadow-slate-200 cursor-pointer transition-all"
             >
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-xl font-semibold text-slate-800 truncate pr-2">
                   {list.name}
                 </h3>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={(e) => handleDeleteList(list.id, e)}
-                  className="text-slate-400 hover:text-red-500 transition-colors p-1"
-                  title="Supprimer"
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => startEditList(list, e)}
+                    className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                    title="Modifier"
+                  >
+                    ✏️
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => handleDeleteList(list.id, e)}
+                    className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                    title="Supprimer"
+                  >
+                    🗑️
+                  </motion.button>
+                </div>
+              </div>
+              {editingListId === list.id ? (
+                <form
+                  onSubmit={(e) => handleUpdateList(e, list.id)}
+                  className="space-y-3"
                 >
-                  🗑️
-                </motion.button>
-              </div>
-              {list.description && (
-                <p className="text-slate-500 text-sm mb-4 line-clamp-2">
-                  {list.description}
-                </p>
+                  <input
+                    value={editListName}
+                    onChange={(e) => setEditListName(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none text-slate-800"
+                  />
+                  <textarea
+                    value={editListDescription}
+                    onChange={(e) => setEditListDescription(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none text-slate-800 resize-none h-20"
+                    placeholder="Description"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={cancelEditList}
+                      className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={updateListMutation.isPending}
+                      className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-300"
+                    >
+                      Enregistrer
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  {list.description && (
+                    <p className="text-slate-500 text-sm mb-4 line-clamp-2">
+                      {list.description}
+                    </p>
+                  )}
+                  <div className="text-xs text-slate-400">
+                    Créée le{" "}
+                    {new Date(list.createdAt).toLocaleDateString("fr-FR")}
+                  </div>
+                </>
               )}
-              <div className="text-xs text-slate-400">
-                Créée le {new Date(list.createdAt).toLocaleDateString("fr-FR")}
-              </div>
             </motion.div>
           ))}
         </motion.div>

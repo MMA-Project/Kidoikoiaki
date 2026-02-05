@@ -68,12 +68,19 @@ export async function initializeDatabase(): Promise<void> {
       listId UNIQUEIDENTIFIER NOT NULL,
       title NVARCHAR(255) NOT NULL,
       amount DECIMAL(10, 2) NOT NULL,
+      category NVARCHAR(50) DEFAULT 'other',
       payerId UNIQUEIDENTIFIER NOT NULL,
       imageUrl NVARCHAR(MAX),
       createdAt DATETIME2 DEFAULT GETDATE(),
       FOREIGN KEY (listId) REFERENCES Lists(id) ON DELETE CASCADE,
       FOREIGN KEY (payerId) REFERENCES Participants(id)
     )
+  `);
+
+  // Add category column if it doesn't exist (migration for existing tables)
+  await connection.request().query(`
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Expenses') AND name = 'category')
+    ALTER TABLE Expenses ADD category NVARCHAR(50) DEFAULT 'other'
   `);
 
   // Create ExpenseParticipants junction table

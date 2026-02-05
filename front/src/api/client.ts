@@ -5,8 +5,10 @@ import type {
   Expense, 
   BalanceSummary,
   CreateListDto,
+  UpdateListDto,
   CreateParticipantDto,
-  CreateExpenseDto
+  CreateExpenseDto,
+  UpdateExpenseDto
 } from '../types';
 
 const API_BASE = 'http://localhost:3001/api';
@@ -57,7 +59,7 @@ export const listsApi = {
       body: JSON.stringify(data),
     }),
   
-  update: (id: string, data: CreateListDto): Promise<List> =>
+  update: (id: string, data: UpdateListDto): Promise<List> =>
     fetchApi<List>(`/lists/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -105,6 +107,7 @@ export const expensesApi = {
     formData.append('listId', data.listId);
     formData.append('title', data.title);
     formData.append('amount', data.amount.toString());
+    formData.append('category', data.category);
     formData.append('payerId', data.payerId);
     formData.append('participantIds', JSON.stringify(data.participantIds));
     
@@ -117,6 +120,12 @@ export const expensesApi = {
       body: formData,
     });
   },
+
+  update: (id: string, data: UpdateExpenseDto): Promise<Expense> =>
+    fetchApi<Expense>(`/expenses/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
   
   delete: (id: string): Promise<void> =>
     fetchApi<void>(`/expenses/${id}`, {

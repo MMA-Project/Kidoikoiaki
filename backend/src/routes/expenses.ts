@@ -39,7 +39,7 @@ router.get('/', async (req: Request, res: Response) => {
       .input('listId', listId as string)
       .query(`
         SELECT 
-          e.id, e.listId, e.title, e.amount, e.payerId, e.imageUrl, e.createdAt,
+          e.id, e.listId, e.title, e.amount, e.category, e.payerId, e.imageUrl, e.createdAt,
           p.name as payerName
         FROM Expenses e
         LEFT JOIN Participants p ON e.payerId = p.id
@@ -82,7 +82,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       .input('id', id)
       .query(`
         SELECT 
-          e.id, e.listId, e.title, e.amount, e.payerId, e.imageUrl, e.createdAt,
+          e.id, e.listId, e.title, e.amount, e.category, e.payerId, e.imageUrl, e.createdAt,
           p.name as payerName
         FROM Expenses e
         LEFT JOIN Participants p ON e.payerId = p.id
@@ -119,7 +119,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // POST /api/expenses - Create a new expense
 router.post('/', upload.single('image'), async (req: Request, res: Response) => {
   try {
-    const { listId, title, amount, payerId, participantIds } = req.body;
+    const { listId, title, amount, category, payerId, participantIds } = req.body;
 
     // Parse participantIds if it's a string (from FormData)
     let parsedParticipantIds: string[];
@@ -155,6 +155,7 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
       return;
     }
 
+    const expenseCategory = category || 'other';
     const pool = await getConnection();
 
     // Verify the list exists
@@ -200,11 +201,12 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
       .input('listId', listId)
       .input('title', title.trim())
       .input('amount', parseFloat(amount))
+      .input('category', expenseCategory)
       .input('payerId', payerId)
       .input('imageUrl', imageUrl)
       .query(`
-        INSERT INTO Expenses (id, listId, title, amount, payerId, imageUrl)
-        VALUES (@id, @listId, @title, @amount, @payerId, @imageUrl)
+        INSERT INTO Expenses (id, listId, title, amount, category, payerId, imageUrl)
+        VALUES (@id, @listId, @title, @amount, @category, @payerId, @imageUrl)
       `);
 
     // Add expense participants
@@ -223,7 +225,7 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
       .input('id', id)
       .query(`
         SELECT 
-          e.id, e.listId, e.title, e.amount, e.payerId, e.imageUrl, e.createdAt,
+          e.id, e.listId, e.title, e.amount, e.category, e.payerId, e.imageUrl, e.createdAt,
           p.name as payerName
         FROM Expenses e
         LEFT JOIN Participants p ON e.payerId = p.id
@@ -247,6 +249,115 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
     console.error('Error creating expense:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     res.status(500).json({ error: 'Failed to create expense', details: message });
+  }
+});
+
+// PUT /api/expenses/:id - Update an expense
+router.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, amount, category, payerId, participantIds } = req.body;
+
+    // Parse participantIds if it's a string
+    let parsedParticipantIds: string[];
+    if (typeof participantIds === 'string') {
+      try {
+        parsedParticipantIds = JSON.parse(participantIds);
+      } catch {
+        parsedParticipantIds = participantIds.split(',').filter(Boolean);
+      }
+    } else {
+      parsedParticipantIds = participantIds || [];
+    }
+
+    // Validation
+    if (!title || title.trim() === '') {
+      res.status(400).json({ error: 'Title is required' });
+      return;
+    }
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      res.status(400).json({ error: 'Valid positive amount is required' });
+      return;
+    }
+    if (!payerId) {
+      res.status(400).json({ error: 'payerId is required' });
+      return;
+    }
+    if (!parsedParticipantIds || parsedParticipantIds.length === 0) {
+      res.status(400).json({ error: 'At least one participant is required' });
+      return;
+    }
+
+    const pool = await getConnection();
+
+    // Check expense exists
+    const expenseCheck = await pool.request()
+      .input('id', id)
+      .query(`SELECT id, listId FROM Expenses WHERE id = @id`);
+
+    if (expenseCheck.recordset.length === 0) {
+      res.status(404).json({ error: 'Expense not found' });
+      return;
+    }
+
+    const listId = expenseCheck.recordset[0].listId;
+
+    // Update expense
+    await pool.request()
+      .input('id', id)
+      .input('title', title.trim())
+      .input('amount', parseFloat(amount))
+      .input('category', category || 'other')
+      .input('payerId', payerId)
+      .query(`
+        UPDATE Expenses
+        SET title = @title, amount = @amount, category = @category, payerId = @payerId
+        WHERE id = @id
+      `);
+
+    // Delete existing participants and add new ones
+    await pool.request()
+      .input('expenseId', id)
+      .query(`DELETE FROM ExpenseParticipants WHERE expenseId = @expenseId`);
+
+    for (const participantId of parsedParticipantIds) {
+      await pool.request()
+        .input('expenseId', id)
+        .input('participantId', participantId)
+        .query(`
+          INSERT INTO ExpenseParticipants (expenseId, participantId)
+          VALUES (@expenseId, @participantId)
+        `);
+    }
+
+    // Fetch and return the updated expense
+    const result = await pool.request()
+      .input('id', id)
+      .query(`
+        SELECT 
+          e.id, e.listId, e.title, e.amount, e.category, e.payerId, e.imageUrl, e.createdAt,
+          p.name as payerName
+        FROM Expenses e
+        LEFT JOIN Participants p ON e.payerId = p.id
+        WHERE e.id = @id
+      `);
+
+    const participantsResult = await pool.request()
+      .input('expenseId', id)
+      .query(`
+        SELECT p.id, p.name
+        FROM ExpenseParticipants ep
+        JOIN Participants p ON ep.participantId = p.id
+        WHERE ep.expenseId = @expenseId
+      `);
+
+    res.json({
+      ...result.recordset[0],
+      participants: participantsResult.recordset,
+    });
+  } catch (error) {
+    console.error('Error updating expense:', error);
+    res.status(500).json({ error: 'Failed to update expense' });
   }
 });
 

@@ -58,7 +58,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       .input('listId', id)
       .query(`
         SELECT 
-          e.id, e.listId, e.title, e.amount, e.payerId, e.imageUrl, e.createdAt,
+          e.id, e.listId, e.title, e.amount, e.category, e.payerId, e.imageUrl, e.createdAt,
           p.name as payerName
         FROM Expenses e
         LEFT JOIN Participants p ON e.payerId = p.id
