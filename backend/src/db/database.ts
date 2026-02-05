@@ -1,5 +1,5 @@
 import sql, { ConnectionPool, config as SqlConfig } from "mssql";
-import { AzureCliCredential } from "@azure/identity";
+import { DefaultAzureCredential } from "@azure/identity";
 
 let pool: ConnectionPool | null = null;
 
@@ -21,9 +21,7 @@ export async function getConnection(): Promise<ConnectionPool> {
   }
 
   try {
-    const credential = new AzureCliCredential({
-      tenantId: undefined,
-    });
+    const credential = new DefaultAzureCredential();
 
     const tokenResponse = await credential.getToken(
       "https://database.windows.net/.default",
