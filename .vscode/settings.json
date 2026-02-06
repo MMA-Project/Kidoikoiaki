@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd /Users/mattisnaud/Documents/Kidoikoiaki && az deployment group create --resource-group my-rg --template-file infra/main-simplified\\.bicep --parameters @infra/parameters-simplified\\.json 2>&1 \\| tail -50$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

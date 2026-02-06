@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "actionGroups_Application_Insights_Smart_Detection_name": {
+      "value": "Application Insights Smart Detection"
+    },
+    "components_app_backend_kidoikoiaki_name": {
+      "value": "app-backend-kidoikoiaki-mnaud"
+    },
+    "components_app_frontend_kidoikoiaki_name": {
+      "value": "app-frontend-kidoikoiaki-mnaud"
+    },
+    "serverfarms_ASP_SQLGrp_ac58_name": {
+      "value": "ASP-SQLGrp-ac58"
+    },
+    "servers_ynov_sql_server_msimon_name": {
+      "value": "ynov-sql-server-mnaud"
+    },
+    "sites_app_backend_kidoikoiaki_name": {
+      "value": "app-backend-kidoikoiaki-mnaud"
+    },
+    "sites_app_frontend_kidoikoiaki_name": {
+      "value": "app-frontend-kidoikoiaki-mnaud"
+    },
+    "storageAccounts_msimonblob_name": {
+      "value": "mnaudblob"
+    },
+    "userAssignedIdentities_oidc_msi_982b_name": {
+      "value": "oidc-msi-982b"
+    },
+    "sqlAdminPassword": {
+      "value": "P@ssw0rd123!Azure"
+    },
+    "vulnerabilityAssessments_Default_storageContainerPath": {
+      "value": ""
+    }
+  }
+}
