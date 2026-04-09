@@ -6,25 +6,25 @@
       "value": "Application Insights Smart Detection"
     },
     "components_app_backend_kidoikoiaki_name": {
-      "value": "app-backend-kidoikoiaki-mnaud"
+      "value": "app-backend-kidoikoiaki-acl260409e"
     },
     "components_app_frontend_kidoikoiaki_name": {
-      "value": "app-frontend-kidoikoiaki-mnaud"
+      "value": "app-frontend-kidoikoiaki-acl260409e"
     },
     "serverfarms_ASP_SQLGrp_ac58_name": {
       "value": "ASP-SQLGrp-ac58"
     },
     "servers_ynov_sql_server_msimon_name": {
-      "value": "ynov-sql-server-mnaud"
+      "value": "ynov-sql-server-acl260409e"
     },
     "sites_app_backend_kidoikoiaki_name": {
-      "value": "app-backend-kidoikoiaki-mnaud"
+      "value": "app-backend-kidoikoiaki-acl260409e"
     },
     "sites_app_frontend_kidoikoiaki_name": {
-      "value": "app-frontend-kidoikoiaki-mnaud"
+      "value": "app-frontend-kidoikoiaki-acl260409e"
     },
     "storageAccounts_msimonblob_name": {
-      "value": "mnaudblob"
+      "value": "kidoiaki2604091003"
     },
     "userAssignedIdentities_oidc_msi_982b_name": {
       "value": "oidc-msi-982b"

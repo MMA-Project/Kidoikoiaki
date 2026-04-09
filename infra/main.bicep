@@ -804,7 +804,7 @@ resource servers_ynov_sql_server_msimon_name_ynov_msimon_sql 'Microsoft.Sql/serv
     autoPauseDelay: 60
     requestedBackupStorageRedundancy: 'Geo'
     minCapacity: json('0.5')
-    maintenanceConfigurationId: '/subscriptions/6ba5dba5-7b0c-4088-9087-658f19d3126c/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default'
+    maintenanceConfigurationId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default'
     isLedgerOn: false
     availabilityZone: 'NoPreference'
   }
@@ -1414,7 +1414,7 @@ resource sites_app_frontend_kidoikoiaki_name_web 'Microsoft.Web/sites/config@202
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_0b8b81e3_b8a8_411d_a658_a5650b759724 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_0b8b81e3_b8a8_411d_a658_a5650b759724 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: '0b8b81e3-b8a8-411d-a658-a5650b759724'
   location: 'France Central'
@@ -1430,7 +1430,7 @@ resource sites_app_frontend_kidoikoiaki_name_0b8b81e3_b8a8_411d_a658_a5650b75972
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_1c8303c6_95f5_4400_a841_2c653089a1e0 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_1c8303c6_95f5_4400_a841_2c653089a1e0 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: '1c8303c6-95f5-4400-a841-2c653089a1e0'
   location: 'France Central'
@@ -1446,7 +1446,7 @@ resource sites_app_frontend_kidoikoiaki_name_1c8303c6_95f5_4400_a841_2c653089a1e
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_1fd7084c_cd68_49ce_9ae8_68fa908e367b 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_1fd7084c_cd68_49ce_9ae8_68fa908e367b 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: '1fd7084c-cd68-49ce-9ae8-68fa908e367b'
   location: 'France Central'
@@ -1462,7 +1462,7 @@ resource sites_app_frontend_kidoikoiaki_name_1fd7084c_cd68_49ce_9ae8_68fa908e367
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_2451f1ce_0f10_4f16_90a1_0091e33438b6 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_2451f1ce_0f10_4f16_90a1_0091e33438b6 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: '2451f1ce-0f10-4f16-90a1-0091e33438b6'
   location: 'France Central'
@@ -1478,7 +1478,7 @@ resource sites_app_frontend_kidoikoiaki_name_2451f1ce_0f10_4f16_90a1_0091e33438b
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_305d780c_498c_4bdd_a5f0_fb7344961d7b 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_305d780c_498c_4bdd_a5f0_fb7344961d7b 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: '305d780c-498c-4bdd-a5f0-fb7344961d7b'
   location: 'France Central'
@@ -1494,7 +1494,7 @@ resource sites_app_frontend_kidoikoiaki_name_305d780c_498c_4bdd_a5f0_fb7344961d7
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_46b2d8c9_d19c_4d6f_aada_3afcce1e67aa 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_46b2d8c9_d19c_4d6f_aada_3afcce1e67aa 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: '46b2d8c9-d19c-4d6f-aada-3afcce1e67aa'
   location: 'France Central'
@@ -1510,7 +1510,7 @@ resource sites_app_backend_kidoikoiaki_name_46b2d8c9_d19c_4d6f_aada_3afcce1e67aa
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_5661e026_7e66_44f2_839e_eb85907e91f7 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_5661e026_7e66_44f2_839e_eb85907e91f7 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: '5661e026-7e66-44f2-839e-eb85907e91f7'
   location: 'France Central'
@@ -1526,7 +1526,7 @@ resource sites_app_backend_kidoikoiaki_name_5661e026_7e66_44f2_839e_eb85907e91f7
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_61c55075_dbe2_4de2_a4e4_22a74d0caaa2 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_61c55075_dbe2_4de2_a4e4_22a74d0caaa2 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: '61c55075-dbe2-4de2-a4e4-22a74d0caaa2'
   location: 'France Central'
@@ -1542,7 +1542,7 @@ resource sites_app_backend_kidoikoiaki_name_61c55075_dbe2_4de2_a4e4_22a74d0caaa2
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_6700f71e_c252_4115_a2b9_6e68e1a4c459 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_6700f71e_c252_4115_a2b9_6e68e1a4c459 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: '6700f71e-c252-4115-a2b9-6e68e1a4c459'
   location: 'France Central'
@@ -1558,7 +1558,7 @@ resource sites_app_backend_kidoikoiaki_name_6700f71e_c252_4115_a2b9_6e68e1a4c459
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_6fbb2e94_547a_400e_b483_57a09e8bb6df 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_6fbb2e94_547a_400e_b483_57a09e8bb6df 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: '6fbb2e94-547a-400e-b483-57a09e8bb6df'
   location: 'France Central'
@@ -1574,7 +1574,7 @@ resource sites_app_backend_kidoikoiaki_name_6fbb2e94_547a_400e_b483_57a09e8bb6df
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_799a7262_6698_4eeb_a909_809c5124c6d2 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_799a7262_6698_4eeb_a909_809c5124c6d2 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: '799a7262-6698-4eeb-a909-809c5124c6d2'
   location: 'France Central'
@@ -1590,7 +1590,7 @@ resource sites_app_backend_kidoikoiaki_name_799a7262_6698_4eeb_a909_809c5124c6d2
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_7dd49e25_1de8_4b1c_88d6_7679b2f4409b 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_7dd49e25_1de8_4b1c_88d6_7679b2f4409b 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: '7dd49e25-1de8-4b1c-88d6-7679b2f4409b'
   location: 'France Central'
@@ -1606,7 +1606,7 @@ resource sites_app_frontend_kidoikoiaki_name_7dd49e25_1de8_4b1c_88d6_7679b2f4409
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_a993d6d7_8e03_40e4_ba01_6fb984edb7b2 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_a993d6d7_8e03_40e4_ba01_6fb984edb7b2 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: 'a993d6d7-8e03-40e4-ba01-6fb984edb7b2'
   location: 'France Central'
@@ -1622,7 +1622,7 @@ resource sites_app_frontend_kidoikoiaki_name_a993d6d7_8e03_40e4_ba01_6fb984edb7b
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_afd2fd6c_d38c_4cf2_8ac6_05d5a72e3d6c 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_afd2fd6c_d38c_4cf2_8ac6_05d5a72e3d6c 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: 'afd2fd6c-d38c-4cf2-8ac6-05d5a72e3d6c'
   location: 'France Central'
@@ -1638,7 +1638,7 @@ resource sites_app_frontend_kidoikoiaki_name_afd2fd6c_d38c_4cf2_8ac6_05d5a72e3d6
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_b5442b98_b04e_413e_91e4_c0db55d2a9e2 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_b5442b98_b04e_413e_91e4_c0db55d2a9e2 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: 'b5442b98-b04e-413e-91e4-c0db55d2a9e2'
   location: 'France Central'
@@ -1654,7 +1654,7 @@ resource sites_app_backend_kidoikoiaki_name_b5442b98_b04e_413e_91e4_c0db55d2a9e2
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_c55f0c1c_00fb_4f20_bf36_a2f1a5162009 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_c55f0c1c_00fb_4f20_bf36_a2f1a5162009 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: 'c55f0c1c-00fb-4f20-bf36-a2f1a5162009'
   location: 'France Central'
@@ -1670,7 +1670,7 @@ resource sites_app_frontend_kidoikoiaki_name_c55f0c1c_00fb_4f20_bf36_a2f1a516200
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_ca6bf6d3_c1b8_498b_a8ce_2b4c0d37c231 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_ca6bf6d3_c1b8_498b_a8ce_2b4c0d37c231 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: 'ca6bf6d3-c1b8-498b-a8ce-2b4c0d37c231'
   location: 'France Central'
@@ -1686,7 +1686,7 @@ resource sites_app_backend_kidoikoiaki_name_ca6bf6d3_c1b8_498b_a8ce_2b4c0d37c231
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_dc2d5a2f_86d3_4c01_ba9d_d68e0f21b43e 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_dc2d5a2f_86d3_4c01_ba9d_d68e0f21b43e 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: 'dc2d5a2f-86d3-4c01-ba9d-d68e0f21b43e'
   location: 'France Central'
@@ -1702,7 +1702,7 @@ resource sites_app_backend_kidoikoiaki_name_dc2d5a2f_86d3_4c01_ba9d_d68e0f21b43e
   }
 }
 
-resource sites_app_frontend_kidoikoiaki_name_e4963ca9_94aa_4bd7_953c_3b6c44684f84 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_frontend_kidoikoiaki_name_e4963ca9_94aa_4bd7_953c_3b6c44684f84 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: 'e4963ca9-94aa-4bd7-953c-3b6c44684f84'
   location: 'France Central'
@@ -1718,7 +1718,7 @@ resource sites_app_frontend_kidoikoiaki_name_e4963ca9_94aa_4bd7_953c_3b6c44684f8
   }
 }
 
-resource sites_app_backend_kidoikoiaki_name_f63a3d11_c70e_4283_999d_6e34d993023f 'Microsoft.Web/sites/deployments@2024-11-01' = {
+resource sites_app_backend_kidoikoiaki_name_f63a3d11_c70e_4283_999d_6e34d993023f 'Microsoft.Web/sites/deployments@2024-11-01' = if (false) {
   parent: sites_app_backend_kidoikoiaki_name_resource
   name: 'f63a3d11-c70e-4283-999d-6e34d993023f'
   location: 'France Central'
