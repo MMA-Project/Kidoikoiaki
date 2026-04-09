@@ -21,32 +21,52 @@ export async function getConnection(): Promise<ConnectionPool> {
   }
 
   try {
-    const credential = new DefaultAzureCredential();
+    const hasSqlCredentials =
+      !!process.env.AZURE_SQL_USER && !!process.env.AZURE_SQL_PASSWORD;
 
-    const tokenResponse = await credential.getToken(
-      "https://database.windows.net/.default",
-    );
+    let config: SqlConfig;
 
-    const config: SqlConfig = {
-      server: process.env.AZURE_SQL_SERVER,
-      database: process.env.AZURE_SQL_DATABASE,
-      authentication: {
-        type: "azure-active-directory-access-token",
+    if (hasSqlCredentials) {
+      config = {
+        server: process.env.AZURE_SQL_SERVER,
+        database: process.env.AZURE_SQL_DATABASE,
+        user: process.env.AZURE_SQL_USER,
+        password: process.env.AZURE_SQL_PASSWORD,
         options: {
-          token: tokenResponse.token,
+          encrypt: true,
+          trustServerCertificate: false,
         },
-      },
-      options: {
-        encrypt: true,
-        trustServerCertificate: false,
-      },
-    };
+      };
+    } else {
+      const credential = new DefaultAzureCredential();
+
+      const tokenResponse = await credential.getToken(
+        "https://database.windows.net/.default",
+      );
+
+      config = {
+        server: process.env.AZURE_SQL_SERVER,
+        database: process.env.AZURE_SQL_DATABASE,
+        authentication: {
+          type: "azure-active-directory-access-token",
+          options: {
+            token: tokenResponse.token,
+          },
+        },
+        options: {
+          encrypt: true,
+          trustServerCertificate: false,
+        },
+      };
+    }
 
     pool = await sql.connect(config);
     return pool;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`❌ Failed to connect to database: ${error.message}`);
+      throw new Error(
+        `❌ Failed to connect to database: ${error.message}. If Managed Identity login fails, set AZURE_SQL_USER and AZURE_SQL_PASSWORD in App Settings.`,
+      );
     }
     throw error;
   }

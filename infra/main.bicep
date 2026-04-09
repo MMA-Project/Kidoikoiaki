@@ -1331,6 +1331,20 @@ resource sites_app_backend_kidoikoiaki_name_web 'Microsoft.Web/sites/config@2024
   }
 }
 
+resource sites_app_backend_kidoikoiaki_name_appsettings 'Microsoft.Web/sites/config@2024-11-01' = {
+  parent: sites_app_backend_kidoikoiaki_name_resource
+  name: 'appsettings'
+  properties: {
+    AZURE_SQL_SERVER: '${servers_ynov_sql_server_msimon_name}.database.windows.net'
+    AZURE_SQL_DATABASE: servers_ynov_sql_server_msimon_name_ynov_msimon_sql.name
+    AZURE_SQL_USER: 'CloudSAc31d0a0d'
+    AZURE_SQL_PASSWORD: sqlAdminPassword
+    AZURE_STORAGE_ACCOUNT_NAME: storageAccounts_msimonblob_name
+    AZURE_STORAGE_CONTAINER_NAME: storageAccounts_msimonblob_name_default_files.name
+    SCM_DO_BUILD_DURING_DEPLOYMENT: 'false'
+  }
+}
+
 resource sites_app_frontend_kidoikoiaki_name_web 'Microsoft.Web/sites/config@2024-11-01' = {
   parent: sites_app_frontend_kidoikoiaki_name_resource
   name: 'web'
